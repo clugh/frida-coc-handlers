@@ -19,29 +19,45 @@
           hex += byte;
         }
         return hex;
+      },
+      state.hexread = function(hex, pointer)
+      {
+        length = hex.length / 2;
+        arr = new Uint8Array(length);
+        for(var i = 0; i < hex.length; i += 2)
+        {
+          arr[i / 2] = parseInt(hex.substring(i, i + 2), 16);
+        }
+        Memory.writeByteArray(pointer, arr)
       }
     }
     state.messageid = state.hexdump(this.buffer, 2);
     if(!state.sockfd && state.messageid == "2774")
     {
       state.sockfd = this.sockfd;
-      state.events = [];
+      log("session started");
     }
     if(state.sockfd && this.sockfd.toInt32() == state.sockfd.toInt32() && this.length > 1)
     {
       header = state.hexdump(this.buffer, 7);
       buffer = state.hexdump(this.buffer, this.length.toInt32()).substring(14);
-      state.events.push(
+      send(
       {
-        type: "send",
-        messageid: state.messageid,
-        header: header,
-        message: state.message,
-        s: state.s,
-        nonce: state.nonce,
-        ciphertext: state.ciphertext,
-        buffer: buffer
+        from: "/coc",
+        json: JSON.stringify(
+        {
+          type: "send",
+          messageid: state.messageid,
+          header: header,
+          message: state.message,
+          s: state.s,
+          nonce: state.nonce,
+          ciphertext: state.ciphertext,
+          buffer: buffer
+        })
       });
+      state.messageid = false;
+      state.header = false;
       state.message = false;
       state.s = false;
       state.nonce = false;

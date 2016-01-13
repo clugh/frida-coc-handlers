@@ -7,23 +7,37 @@
     this.unknown = args[3];
     this.nonce = args[4];
     this.s = args[5];
-    state.ciphertext = state.hexdump(this.ciphertext, this.length.toInt32());
+    if(state.messageid)
+    {
+      state.ciphertext = state.hexdump(this.ciphertext, this.length.toInt32());
+    }
   },
   onLeave(log, retval, state)
   {
-    state.events.push(
+    if(state.messageid)
     {
-      type: "recv",
-      messageid: state.messageid,
-      header: state.header,
-      message: state.hexdump(this.message, this.length.toInt32()),
-      s: state.hexdump(this.s, 32),
-      nonce: state.hexdump(this.nonce, 24),
-      ciphertext: state.ciphertext,
-      buffer: state.buffer
-    });
-    state.header = false;
-    state.buffer = false;
-    state.ciphertext = false;
+      send(
+      {
+        from: "/coc",
+        json: JSON.stringify(
+        {
+          type: "recv",
+          messageid: state.messageid,
+          header: state.header,
+          message: state.hexdump(this.message, this.length.toInt32()),
+          s: state.hexdump(this.s, 32),
+          nonce: state.hexdump(this.nonce, 24),
+          ciphertext: state.ciphertext,
+          buffer: state.buffer
+        })
+      });
+      state.messageid = false;
+      state.header = false;
+      state.message = false;
+      state.s = false;
+      state.nonce = false;
+      state.ciphertext = false;
+      state.buffer = false;
+    }
   }
 }

@@ -8,10 +8,14 @@
     this.nonce = args[4];
     this.pk = args[5];
     this.sk = args[6];
-    state.events.push(
+    send(
     {
-      type: "crypto_box",
-      serverkey: state.hexdump(this.pk, 32)
+      from: "/coc",
+      json: JSON.stringify(
+      {
+        type: "crypto_box",
+        serverkey: state.hexdump(this.pk, 32)
+      })
     });
   }
 }

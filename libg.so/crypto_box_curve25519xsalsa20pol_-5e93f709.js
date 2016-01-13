@@ -6,11 +6,18 @@
   },
   onLeave(log, retval, state)
   {
-    state.events.push(
+    if(state.sockfd)
     {
-      type: "keypair",
-      pk: state.hexdump(this.pk, 32),
-      sk: state.hexdump(this.sk, 32)
-    });
+      send(
+      {
+        from: "/coc",
+        json: JSON.stringify(
+        {
+          type: "keypair",
+          pk: state.hexdump(this.pk, 32),
+          sk: state.hexdump(this.sk, 32)
+        })
+      });
+    }
   }
 }
