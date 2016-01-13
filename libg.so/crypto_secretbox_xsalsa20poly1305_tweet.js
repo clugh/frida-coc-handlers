@@ -6,15 +6,13 @@
     this.length = args[2];
     this.unknown = args[3];
     this.nonce = args[4];
-    this.sk = args[5];
-    log("entering crypto_secretbox_xsalsa20poly1305_tweet()");
-    log(state.hexdump(this.sk, 32));
-    log(state.hexdump(this.nonce, 24));
-    log(state.hexdump(this.message, this.length.toInt32()));
+    this.s = args[5];
+    state.message = state.hexdump(this.message, this.length.toInt32());
+    state.s = state.hexdump(this.s, 32);
+    state.nonce = state.hexdump(this.nonce, 24);
   },
   onLeave(log, retval, state)
   {
-    log("leaving crypto_secretbox_xsalsa20poly1305_tweet()");
-    log(state.hexdump(this.ciphertext, this.length.toInt32()));
+    state.ciphertext = state.hexdump(this.ciphertext, this.length.toInt32());
   }
 }
