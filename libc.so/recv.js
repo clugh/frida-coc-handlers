@@ -8,7 +8,7 @@
   },
   onLeave(log, retval, state)
   {
-    if(this.sockfd.toInt32() == state.sockfd.toInt32())
+    if(state.sockfd && this.sockfd.toInt32() == state.sockfd.toInt32())
     {
       if(this.length == 7)
       {
@@ -17,7 +17,7 @@
       }
       else
       {
-        if(this.length > 1 && state.header)
+        if(this.length > 0 && state.header)
         {
           state.buffer = state.hexdump(this.buffer, this.length.toInt32());
         }

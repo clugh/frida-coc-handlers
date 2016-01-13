@@ -31,8 +31,8 @@
         Memory.writeByteArray(pointer, arr)
       }
     }
-    state.messageid = state.hexdump(this.buffer, 2);
-    if(!state.sockfd && state.messageid == "2774")
+    messageid = state.hexdump(this.buffer, 2);
+    if(!state.sockfd && messageid == "2774")
     {
       state.sockfd = this.sockfd;
       log("session started");
@@ -47,7 +47,7 @@
         json: JSON.stringify(
         {
           type: "send",
-          messageid: state.messageid,
+          messageid: messageid,
           header: header,
           message: state.message,
           s: state.s,
@@ -56,8 +56,6 @@
           buffer: buffer
         })
       });
-      state.messageid = false;
-      state.header = false;
       state.message = false;
       state.s = false;
       state.nonce = false;

@@ -33,9 +33,6 @@
       });
       state.messageid = false;
       state.header = false;
-      state.message = false;
-      state.s = false;
-      state.nonce = false;
       state.ciphertext = false;
       state.buffer = false;
     }
