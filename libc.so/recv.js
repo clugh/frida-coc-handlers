@@ -20,6 +20,23 @@
         if(this.length > 0 && state.header)
         {
           state.buffer = state.hexdump(this.buffer, this.length.toInt32());
+          if(state.messageid == "4e84")
+          {
+            send(
+            {
+              from: "/coc",
+              json: JSON.stringify(
+              {
+                type: "recv",
+                messageid: state.messageid,
+                header: state.header,
+                buffer: state.buffer
+              })
+            });
+            state.messageid = false;
+            state.header = false;
+            state.buffer = false;
+          }
         }
       }
     }
