@@ -29,6 +29,7 @@
       {
         from: "/coc",
         type: "socket",
+        threadid: Process.getCurrentThreadId()
       });
       state.recv = function()
       {
