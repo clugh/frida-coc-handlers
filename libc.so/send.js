@@ -19,45 +19,43 @@
           hex += byte;
         }
         return hex;
-      },
-      state.hexread = function(hex, pointer)
-      {
-        length = hex.length / 2;
-        arr = new Uint8Array(length);
-        for(var i = 0; i < hex.length; i += 2)
-        {
-          arr[i / 2] = parseInt(hex.substring(i, i + 2), 16);
-        }
-        Memory.writeByteArray(pointer, arr)
       }
     }
     messageid = state.hexdump(this.buffer, 2);
     if(!state.sockfd && messageid == "2774")
     {
       state.sockfd = this.sockfd;
-      log("session started");
-    }
-    if(state.sockfd && this.sockfd.toInt32() == state.sockfd.toInt32() && this.length > 1)
-    {
-      header = state.hexdump(this.buffer, 7);
-      buffer = state.hexdump(this.buffer, this.length.toInt32()).substring(14);
       send(
       {
         from: "/coc",
-        json: JSON.stringify(
+        type: "socket",
+      });
+      state.recv = function()
+      {
+        recv("log", function(value)
         {
-          type: "send",
-          messageid: messageid,
-          header: header,
-          message: state.message,
-          s: state.s,
-          nonce: state.nonce,
-          ciphertext: state.ciphertext,
-          buffer: buffer
-        })
+          log(value.message)
+          state.recv();
+        });
+      };
+      state.recv();
+      state.recv.wait();
+    }
+    if(state.sockfd && this.sockfd.equals(state.sockfd) && this.length > 0)
+    {
+      send(
+      {
+        from: "/coc",
+        type: "send",
+        messageid: messageid,
+        message: state.message,
+        k: state.k,
+        nonce: state.nonce,
+        ciphertext: state.ciphertext,
+        buffer: state.hexdump(this.buffer.add(7), this.length.toInt32() - 7)
       });
       state.message = false;
-      state.s = false;
+      state.k = false;
       state.nonce = false;
       state.ciphertext = false;
     }

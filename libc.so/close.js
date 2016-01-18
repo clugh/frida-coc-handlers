@@ -2,10 +2,14 @@
   onEnter(log, args, state)
   {
     this.fd = args[0];
-    if(state.sockfd && this.fd.toInt32() == state.sockfd.toInt32())
+    if(state.sockfd && this.fd.equals(state.sockfd))
     {
       state.sockfd = false;
-      log("session closed");
+      send(
+      {
+        from: "/coc",
+        type: "close",
+      });
     }
   }
 }

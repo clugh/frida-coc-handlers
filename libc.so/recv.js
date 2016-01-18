@@ -8,12 +8,11 @@
   },
   onLeave(log, retval, state)
   {
-    if(state.sockfd && this.sockfd.toInt32() == state.sockfd.toInt32())
+    if(state.sockfd && this.sockfd.equals(state.sockfd))
     {
       if(this.length == 7)
       {
         state.messageid = state.hexdump(this.buffer, 2);
-        state.header = state.hexdump(this.buffer, 7);
       }
       else
       {
@@ -25,13 +24,9 @@
             send(
             {
               from: "/coc",
-              json: JSON.stringify(
-              {
-                type: "recv",
-                messageid: state.messageid,
-                header: state.header,
-                buffer: state.buffer
-              })
+              type: "recv",
+              messageid: state.messageid,
+              buffer: state.hexdump(this.buffer, this.length.toInt32())
             });
             state.messageid = false;
             state.header = false;

@@ -11,13 +11,12 @@
       send(
       {
         from: "/coc",
-        json: JSON.stringify(
-        {
-          type: "keypair",
-          pk: state.hexdump(this.pk, 32),
-          sk: state.hexdump(this.sk, 32)
-        })
+        type: "keypair",
+        pk: this.pk.toString(),
+        sk: this.sk.toString()
       });
+      var op = recv("keypair", function(){});
+      op.wait();
     }
   }
 }
